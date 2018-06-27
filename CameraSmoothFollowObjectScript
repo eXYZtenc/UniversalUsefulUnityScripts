@@ -1,0 +1,37 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CameraSmoothFollowObjectScript : MonoBehaviour {
+    public GameObject objectToFollow;
+    public float positionOffsetZ = 1f;
+    public float positionOffsetY = 1f;
+    public float timeOffset = 100f;
+    public float cameraSlower = 4f;
+    public float timerSpeed;
+    public float timerPosition;
+
+    // Use this for initialization
+    void Start () {
+		
+	}
+	
+	// Update is called once per frame
+	void Update () {
+        timerSpeed += Time.deltaTime / timeOffset;
+        timerPosition += Time.deltaTime / cameraSlower;
+        gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, Mathf.Lerp(gameObject.GetComponent<Rigidbody>().velocity.y, objectToFollow.GetComponent<Rigidbody>().velocity.y, timerSpeed), Mathf.Lerp(gameObject.GetComponent<Rigidbody>().velocity.z, objectToFollow.GetComponent<Rigidbody>().velocity.z, timerSpeed));
+
+        positionOffsetZ = 1f + objectToFollow.GetComponent<Rigidbody>().velocity.z/10;
+        positionOffsetY = -1f + objectToFollow.GetComponent<Rigidbody>().velocity.y/5;
+        gameObject.transform.position = new Vector3(gameObject.transform.position.x, Mathf.Lerp(gameObject.transform.position.y, objectToFollow.transform.position.y - positionOffsetY, timerSpeed), Mathf.Lerp(gameObject.transform.position.z, objectToFollow.transform.position.z - positionOffsetZ, timerSpeed));
+
+
+        if (timerSpeed > 1)
+            timerSpeed = 0;
+        if (timerPosition > 1)
+            timerPosition = 0;
+
+
+    }
+}
